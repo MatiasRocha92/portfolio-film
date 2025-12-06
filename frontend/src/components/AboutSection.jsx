@@ -177,7 +177,7 @@ export const AboutSection = () => {
             design digital systems with clarity and emotion.
           </p>
           <p className="text-editorial mt-6">
-            Whether you're building a new brand, rethinking your identity or
+            Whether you&apos;re building a new brand, rethinking your identity or
             crafting your digital presence — we help translate vision into form,
             movement and code.
           </p>
