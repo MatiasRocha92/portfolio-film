@@ -57,12 +57,16 @@ export const HeroSection = () => {
           <video
             ref={videoRef}
             className="absolute inset-0 w-full h-full object-cover"
-            src="https://videos.pexels.com/video-files/3015488/3015488-uhd_2560_1440_24fps.mp4"
+            src="https://cdn.pixabay.com/video/2020/07/30/45913-447087782_large.mp4"
             muted
             playsInline
+            autoPlay
+            loop
             preload="auto"
             onLoadedData={() => setIsVideoLoaded(true)}
           />
+          {/* Fallback background for slow video load */}
+          <div className="absolute inset-0 bg-background" style={{ zIndex: -1 }} />
           {/* Video Overlay for contrast */}
           <div className="absolute inset-0 video-overlay" />
         </motion.div>
