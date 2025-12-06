@@ -59,7 +59,7 @@ const WorkCard = ({ work, index }) => {
     >
       {/* Image */}
       <div
-        className={`relative overflow-hidden aspect-[4/3] ${!isEven ? 'lg:order-2' : ''}`}
+        className={`relative overflow-hidden aspect-[4/3] cursor-pointer ${!isEven ? 'lg:order-2' : ''}`}
       >
         <motion.img
           src={work.image}
@@ -68,15 +68,11 @@ const WorkCard = ({ work, index }) => {
           whileHover={{ scale: 1.05 }}
           transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1] }}
         />
-        {/* Hover Overlay */}
-        <div className="absolute inset-0 bg-background/20 opacity-0 group-hover:opacity-100 transition-opacity duration-500 flex items-center justify-center">
-          <motion.div
-            initial={{ scale: 0, opacity: 0 }}
-            whileHover={{ scale: 1, opacity: 1 }}
-            className="w-20 h-20 rounded-full border border-foreground/50 flex items-center justify-center"
-          >
+        {/* Hover Overlay - pointer-events-none to not block interactions */}
+        <div className="absolute inset-0 bg-background/20 opacity-0 group-hover:opacity-100 transition-opacity duration-500 flex items-center justify-center pointer-events-none">
+          <div className="w-20 h-20 rounded-full border border-foreground/50 flex items-center justify-center scale-75 group-hover:scale-100 opacity-0 group-hover:opacity-100 transition-all duration-500">
             <ArrowUpRight className="w-6 h-6 text-foreground" />
-          </motion.div>
+          </div>
         </div>
       </div>
 
