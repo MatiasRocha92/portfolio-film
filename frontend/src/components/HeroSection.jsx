@@ -1,39 +1,24 @@
-import React, { useRef, useEffect, useState } from 'react';
+import React, { useRef } from 'react';
 import { motion, useScroll, useTransform } from 'framer-motion';
 import { ChevronDown } from 'lucide-react';
 
 export const HeroSection = () => {
   const containerRef = useRef(null);
-  const videoRef = useRef(null);
-  const [isVideoLoaded, setIsVideoLoaded] = useState(false);
 
   const { scrollYProgress } = useScroll({
     target: containerRef,
     offset: ['start start', 'end start'],
   });
 
-  // Zoom effect based on scroll
-  const scale = useTransform(scrollYProgress, [0, 1], [1, 1.5]);
-  const opacity = useTransform(scrollYProgress, [0, 0.8], [1, 0]);
-  const textY = useTransform(scrollYProgress, [0, 0.5], [0, -100]);
-
-  // Video time control based on scroll
-  useEffect(() => {
-    const video = videoRef.current;
-    if (!video) return;
-
-    const handleScroll = () => {
-      if (video.duration) {
-        const scrollPercent = window.scrollY / (window.innerHeight * 0.8);
-        const clampedPercent = Math.min(Math.max(scrollPercent, 0), 1);
-        const targetTime = clampedPercent * Math.min(video.duration, 10);
-        video.currentTime = targetTime;
-      }
-    };
-
-    window.addEventListener('scroll', handleScroll);
-    return () => window.removeEventListener('scroll', handleScroll);
-  }, [isVideoLoaded]);
+  // Parallax effects - different speeds for different elements
+  const titleY = useTransform(scrollYProgress, [0, 1], [0, -300]);
+  const subtitleY = useTransform(scrollYProgress, [0, 1], [0, -150]);
+  const scrollIndicatorY = useTransform(scrollYProgress, [0, 1], [0, -50]);
+  
+  // Opacity fades
+  const titleOpacity = useTransform(scrollYProgress, [0, 0.5], [1, 0]);
+  const subtitleOpacity = useTransform(scrollYProgress, [0, 0.6], [1, 0]);
+  const scrollIndicatorOpacity = useTransform(scrollYProgress, [0, 0.3], [1, 0]);
 
   const scrollToWorks = () => {
     const worksSection = document.querySelector('#works');
@@ -45,17 +30,13 @@ export const HeroSection = () => {
   return (
     <section
       ref={containerRef}
-      className="relative h-[200vh]"
+      className="relative h-[150vh]"
     >
-      {/* Sticky Video Container */}
+      {/* Sticky Container */}
       <div className="sticky top-0 h-screen overflow-hidden">
-        {/* Video Background */}
-        <motion.div
-          style={{ scale }}
-          className="absolute inset-0 w-full h-full"
-        >
+        {/* Video Background - Fixed, no zoom */}
+        <div className="absolute inset-0 w-full h-full">
           <video
-            ref={videoRef}
             className="absolute inset-0 w-full h-full object-cover"
             src="https://customer-assets.emergentagent.com/job_editlux/artifacts/zn2gz1ch_playa-miami.mp4"
             muted
@@ -63,33 +44,33 @@ export const HeroSection = () => {
             autoPlay
             loop
             preload="auto"
-            onLoadedData={() => setIsVideoLoaded(true)}
           />
-          {/* Fallback background for slow video load */}
-          <div className="absolute inset-0 bg-background" style={{ zIndex: -1 }} />
-          {/* Video Overlay for contrast */}
-          <div className="absolute inset-0 video-overlay" />
-        </motion.div>
+          {/* Subtle overlay for text readability */}
+          <div className="absolute inset-0 bg-background/30" />
+        </div>
 
         {/* Hero Content */}
-        <motion.div
-          style={{ y: textY, opacity }}
-          className="relative z-10 flex flex-col justify-center h-full px-6 md:px-12 lg:px-20 max-w-[1800px] mx-auto"
-        >
-          {/* Main Title */}
-          <div className="overflow-hidden">
+        <div className="relative z-10 flex flex-col justify-center h-full px-6 md:px-12 lg:px-20">
+          {/* Main Title - Giant with blend mode */}
+          <motion.div
+            style={{ y: titleY, opacity: titleOpacity }}
+            className="overflow-visible"
+          >
             <motion.h1
-              initial={{ y: 200, opacity: 0 }}
+              initial={{ y: 100, opacity: 0 }}
               animate={{ y: 0, opacity: 1 }}
               transition={{ duration: 1.2, ease: [0.16, 1, 0.3, 1], delay: 0.3 }}
-              className="title-hero text-foreground"
+              className="font-display text-[20vw] md:text-[18vw] lg:text-[15vw] leading-[0.85] tracking-[-0.02em] uppercase text-foreground mix-blend-difference"
             >
               LUMIÈRE
             </motion.h1>
-          </div>
+          </motion.div>
 
-          {/* Subtitle */}
-          <div className="mt-8 md:mt-12 max-w-xl">
+          {/* Subtitle with parallax */}
+          <motion.div 
+            style={{ y: subtitleY, opacity: subtitleOpacity }}
+            className="mt-8 md:mt-12 max-w-xl"
+          >
             <motion.p
               initial={{ opacity: 0, y: 40 }}
               animate={{ opacity: 1, y: 0 }}
@@ -110,10 +91,11 @@ export const HeroSection = () => {
               <br />
               MODERN VISUALS.
             </motion.p>
-          </div>
+          </motion.div>
 
-          {/* Scroll Indicator */}
+          {/* Scroll Indicator with parallax */}
           <motion.button
+            style={{ y: scrollIndicatorY, opacity: scrollIndicatorOpacity }}
             onClick={scrollToWorks}
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
@@ -123,7 +105,7 @@ export const HeroSection = () => {
             <span className="text-xs tracking-[0.3em] uppercase">Scroll</span>
             <ChevronDown className="w-5 h-5 scroll-indicator" />
           </motion.button>
-        </motion.div>
+        </div>
       </div>
     </section>
   );
