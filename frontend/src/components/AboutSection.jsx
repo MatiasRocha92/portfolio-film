@@ -56,7 +56,7 @@ const FounderCard = ({ founder, index }) => {
       </h4>
       <p className="text-label mt-2">{founder.role}</p>
       <p className="text-editorial mt-4 text-sm italic">
-        "{founder.quote}"
+        &quot;{founder.quote}&quot;
       </p>
     </motion.div>
   );
