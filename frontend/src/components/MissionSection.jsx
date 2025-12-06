@@ -63,7 +63,7 @@ export const MissionSection = () => {
             </p>
             <p className="text-editorial mt-6">
               We approach each project with the same intention: to strip away
-              what's unnecessary, to focus on what's essential, and to build with
+              what&apos;s unnecessary, to focus on what&apos;s essential, and to build with
               clarity and precision.
             </p>
           </motion.div>
