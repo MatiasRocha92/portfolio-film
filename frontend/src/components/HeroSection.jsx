@@ -1,29 +1,18 @@
-import React, { useRef, useEffect, useCallback } from 'react';
+import React, { useRef, useEffect } from 'react';
 import { motion, useScroll, useTransform } from 'framer-motion';
 import { ChevronDown } from 'lucide-react';
 
 export const HeroSection = () => {
   const containerRef = useRef(null);
   const videoRef = useRef(null);
+  const currentTimeRef = useRef(0);
+  const targetTimeRef = useRef(0);
+  const rafRef = useRef(null);
 
   const { scrollYProgress } = useScroll({
     target: containerRef,
     offset: ['start start', 'end start'],
   });
-
-  // Scroll-driven video control
-  const updateVideoTime = useCallback(() => {
-    const video = videoRef.current;
-    if (!video || !video.duration) return;
-    
-    const scrollTop = window.scrollY;
-    const docHeight = containerRef.current?.offsetHeight || window.innerHeight;
-    const scrollPercent = Math.min(scrollTop / (docHeight - window.innerHeight), 1);
-    
-    // Map scroll to video time (use first 8 seconds of video)
-    const targetTime = scrollPercent * Math.min(video.duration, 8);
-    video.currentTime = targetTime;
-  }, []);
 
   useEffect(() => {
     const video = videoRef.current;
@@ -31,26 +20,67 @@ export const HeroSection = () => {
 
     // Pause video - only scroll controls it
     video.pause();
-    
-    // Initial position
     video.currentTime = 0;
 
+    // Lerp function for smooth interpolation
+    const lerp = (start, end, factor) => {
+      return start + (end - start) * factor;
+    };
+
+    // Calculate target time based on scroll
+    const updateTargetTime = () => {
+      if (!video.duration) return;
+      
+      const scrollTop = window.scrollY;
+      const docHeight = containerRef.current?.offsetHeight || window.innerHeight;
+      const scrollPercent = Math.min(Math.max(scrollTop / (docHeight - window.innerHeight), 0), 1);
+      
+      // Map scroll to video time (use first 8 seconds)
+      targetTimeRef.current = scrollPercent * Math.min(video.duration, 8);
+    };
+
+    // Smooth animation loop
+    const animate = () => {
+      if (!video.duration) {
+        rafRef.current = requestAnimationFrame(animate);
+        return;
+      }
+
+      // Smooth lerp towards target time (0.08 = smoothness factor, lower = smoother)
+      currentTimeRef.current = lerp(currentTimeRef.current, targetTimeRef.current, 0.08);
+      
+      // Only update if there's a significant difference to avoid micro-stutters
+      if (Math.abs(video.currentTime - currentTimeRef.current) > 0.01) {
+        video.currentTime = currentTimeRef.current;
+      }
+
+      rafRef.current = requestAnimationFrame(animate);
+    };
+
     const handleScroll = () => {
-      requestAnimationFrame(updateVideoTime);
+      updateTargetTime();
     };
 
     const handleVideoLoad = () => {
-      updateVideoTime();
+      updateTargetTime();
+      // Start animation loop
+      rafRef.current = requestAnimationFrame(animate);
     };
 
     video.addEventListener('loadedmetadata', handleVideoLoad);
     window.addEventListener('scroll', handleScroll, { passive: true });
     
+    // Start animation loop immediately
+    rafRef.current = requestAnimationFrame(animate);
+
     return () => {
       video.removeEventListener('loadedmetadata', handleVideoLoad);
       window.removeEventListener('scroll', handleScroll);
+      if (rafRef.current) {
+        cancelAnimationFrame(rafRef.current);
+      }
     };
-  }, [updateVideoTime]);
+  }, []);
 
   // Parallax effects for different layers
   const titleY = useTransform(scrollYProgress, [0, 0.5], [0, -400]);
@@ -81,7 +111,7 @@ export const HeroSection = () => {
     >
       {/* Sticky Container */}
       <div className="sticky top-0 h-screen overflow-hidden">
-        {/* Video Background - Scroll controlled */}
+        {/* Video Background - Scroll controlled with smooth interpolation */}
         <div className="absolute inset-0 w-full h-full">
           <video
             ref={videoRef}
