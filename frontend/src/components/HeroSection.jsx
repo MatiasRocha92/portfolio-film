@@ -57,7 +57,7 @@ export const HeroSection = () => {
           <video
             ref={videoRef}
             className="absolute inset-0 w-full h-full object-cover"
-            src="https://cdn.pixabay.com/video/2020/07/30/45913-447087782_large.mp4"
+            src="https://cdn.coverr.co/videos/coverr-aerial-view-of-big-waves-crashing-on-beach-rocks-5227/1080p.mp4"
             muted
             playsInline
             autoPlay
