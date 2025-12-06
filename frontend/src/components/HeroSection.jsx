@@ -1,88 +1,75 @@
-import React, { useRef, useEffect } from 'react';
+import React, { useRef, useLayoutEffect } from 'react';
 import { motion, useScroll, useTransform } from 'framer-motion';
 import { ChevronDown } from 'lucide-react';
+import gsap from 'gsap';
+import { ScrollTrigger } from 'gsap/ScrollTrigger';
+
+// Register GSAP plugin
+gsap.registerPlugin(ScrollTrigger);
 
 export const HeroSection = () => {
   const containerRef = useRef(null);
   const videoRef = useRef(null);
-  const currentTimeRef = useRef(0);
-  const targetTimeRef = useRef(0);
-  const rafRef = useRef(null);
+  const stickyRef = useRef(null);
 
   const { scrollYProgress } = useScroll({
     target: containerRef,
     offset: ['start start', 'end start'],
   });
 
-  useEffect(() => {
+  // GSAP ScrollTrigger for ultra-smooth video scrubbing
+  useLayoutEffect(() => {
     const video = videoRef.current;
-    if (!video) return;
-
-    // Pause video - only scroll controls it
-    video.pause();
-    video.currentTime = 0;
-
-    // Lerp function for smooth interpolation
-    const lerp = (start, end, factor) => {
-      return start + (end - start) * factor;
-    };
-
-    // Calculate target time based on scroll
-    const updateTargetTime = () => {
-      if (!video.duration) return;
-      
-      const scrollTop = window.scrollY;
-      const docHeight = containerRef.current?.offsetHeight || window.innerHeight;
-      const scrollPercent = Math.min(Math.max(scrollTop / (docHeight - window.innerHeight), 0), 1);
-      
-      // Map scroll to video time (use first 8 seconds)
-      targetTimeRef.current = scrollPercent * Math.min(video.duration, 8);
-    };
-
-    // Smooth animation loop
-    const animate = () => {
-      if (!video.duration) {
-        rafRef.current = requestAnimationFrame(animate);
-        return;
-      }
-
-      // Smooth lerp towards target time (0.08 = smoothness factor, lower = smoother)
-      currentTimeRef.current = lerp(currentTimeRef.current, targetTimeRef.current, 0.08);
-      
-      // Only update if there's a significant difference to avoid micro-stutters
-      if (Math.abs(video.currentTime - currentTimeRef.current) > 0.01) {
-        video.currentTime = currentTimeRef.current;
-      }
-
-      rafRef.current = requestAnimationFrame(animate);
-    };
-
-    const handleScroll = () => {
-      updateTargetTime();
-    };
-
-    const handleVideoLoad = () => {
-      updateTargetTime();
-      // Start animation loop
-      rafRef.current = requestAnimationFrame(animate);
-    };
-
-    video.addEventListener('loadedmetadata', handleVideoLoad);
-    window.addEventListener('scroll', handleScroll, { passive: true });
+    const container = containerRef.current;
     
-    // Start animation loop immediately
-    rafRef.current = requestAnimationFrame(animate);
+    if (!video || !container) return;
+
+    // Wait for video metadata
+    const initScrollTrigger = () => {
+      // Use only first 4 seconds for tighter control
+      const videoDuration = Math.min(video.duration || 4, 4);
+      
+      // Kill any existing ScrollTriggers
+      ScrollTrigger.getAll().forEach(st => st.kill());
+
+      // Create timeline with ScrollTrigger
+      const tl = gsap.timeline({
+        scrollTrigger: {
+          trigger: container,
+          start: 'top top',
+          end: 'bottom bottom',
+          scrub: 1, // Smooth scrubbing (1 second lag)
+          pin: false,
+        }
+      });
+
+      // Animate video currentTime
+      tl.to(video, {
+        currentTime: videoDuration,
+        duration: 1,
+        ease: 'none'
+      });
+    };
+
+    // Initialize when video is ready
+    if (video.readyState >= 1) {
+      video.pause();
+      video.currentTime = 0;
+      initScrollTrigger();
+    } else {
+      video.addEventListener('loadedmetadata', () => {
+        video.pause();
+        video.currentTime = 0;
+        initScrollTrigger();
+      });
+    }
 
     return () => {
-      video.removeEventListener('loadedmetadata', handleVideoLoad);
-      window.removeEventListener('scroll', handleScroll);
-      if (rafRef.current) {
-        cancelAnimationFrame(rafRef.current);
-      }
+      ScrollTrigger.getAll().forEach(st => st.kill());
     };
   }, []);
 
-  // Parallax effects for different layers
+  // Parallax effects for different layers (using Framer Motion)
   const titleY = useTransform(scrollYProgress, [0, 0.5], [0, -400]);
   const titleOpacity = useTransform(scrollYProgress, [0, 0.3, 0.5], [1, 1, 0]);
   const titleScale = useTransform(scrollYProgress, [0, 0.5], [1, 0.8]);
@@ -110,8 +97,8 @@ export const HeroSection = () => {
       className="relative h-[300vh]"
     >
       {/* Sticky Container */}
-      <div className="sticky top-0 h-screen overflow-hidden">
-        {/* Video Background - Scroll controlled with smooth interpolation */}
+      <div ref={stickyRef} className="sticky top-0 h-screen overflow-hidden">
+        {/* Video Background - GSAP ScrollTrigger controlled */}
         <div className="absolute inset-0 w-full h-full">
           <video
             ref={videoRef}
