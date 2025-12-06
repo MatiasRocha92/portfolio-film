@@ -6,15 +6,16 @@ import { Toaster } from './components/ui/sonner';
 
 function App() {
   useEffect(() => {
-    // Initialize Lenis for ultra-smooth scrolling
+    // Initialize Lenis for smooth scrolling - optimized for mouse wheel
     const lenis = new Lenis({
-      duration: 1.2,
-      easing: (t) => Math.min(1, 1.001 - Math.pow(2, -10 * t)),
-      direction: 'vertical',
-      gestureDirection: 'vertical',
-      smooth: true,
-      smoothTouch: false,
-      touchMultiplier: 2,
+      duration: 0.8,
+      easing: (t) => 1 - Math.pow(1 - t, 3),
+      orientation: 'vertical',
+      gestureOrientation: 'vertical',
+      smoothWheel: true,
+      wheelMultiplier: 1,
+      touchMultiplier: 1.5,
+      infinite: false,
     });
 
     function raf(time) {
