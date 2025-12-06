@@ -67,8 +67,8 @@ export const ContactSection = () => {
               variants={itemVariants}
               className="text-xl md:text-2xl font-light leading-relaxed text-foreground max-w-lg"
             >
-              Have a project in mind? We'd love to hear about it. Get in touch
-              and let's create something extraordinary together.
+              Have a project in mind? We&apos;d love to hear about it. Get in touch
+              and let&apos;s create something extraordinary together.
             </motion.p>
 
             {/* Contact Info */}
