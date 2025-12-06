@@ -89,15 +89,16 @@ export const Navigation = () => {
             className="fixed inset-0 z-[100] bg-background"
           >
             <div className="flex flex-col h-full px-6 py-8">
-              <div className="flex justify-between items-center">
+              <div className="flex justify-between items-center relative z-10">
                 <span className="font-display text-2xl tracking-wider text-foreground">
                   LUMIÈRE
                 </span>
                 <Button
                   variant="ghost"
                   size="icon"
-                  className="text-foreground hover:bg-transparent"
+                  className="text-foreground hover:bg-transparent relative z-20"
                   onClick={() => setIsMobileMenuOpen(false)}
+                  aria-label="Close menu"
                 >
                   <X className="h-6 w-6" />
                 </Button>
