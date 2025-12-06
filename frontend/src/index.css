@@ -1,115 +1,289 @@
+@import url('https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Inter:wght@300;400;500;600&display=swap');
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
-body {
-    margin: 0;
-    font-family:
-        -apple-system, BlinkMacSystemFont, "Segoe UI", "Roboto", "Oxygen",
-        "Ubuntu", "Cantarell", "Fira Sans", "Droid Sans", "Helvetica Neue",
-        sans-serif;
+/* ==============================================
+   DESIGN SYSTEM TOKENS - CINEMATIC FILMMAKER
+   Premium, Minimalist, Editorial Aesthetic
+   ============================================== */
+
+@layer base {
+  :root {
+    /* Core Colors - Monochromatic Luxury */
+    --background: 0 0% 2%;          /* Deep black */
+    --foreground: 0 0% 98%;          /* Pure white */
+    
+    /* Card & Surface Colors */
+    --card: 0 0% 4%;
+    --card-foreground: 0 0% 98%;
+    --popover: 0 0% 4%;
+    --popover-foreground: 0 0% 98%;
+    
+    /* Primary - Editorial White */
+    --primary: 0 0% 98%;
+    --primary-foreground: 0 0% 2%;
+    
+    /* Secondary - Elegant Gray */
+    --secondary: 0 0% 12%;
+    --secondary-foreground: 0 0% 85%;
+    
+    /* Muted - Subtle Grays */
+    --muted: 0 0% 8%;
+    --muted-foreground: 0 0% 55%;
+    
+    /* Accent - Warm Gray */
+    --accent: 0 0% 15%;
+    --accent-foreground: 0 0% 95%;
+    
+    /* States */
+    --destructive: 0 62% 50%;
+    --destructive-foreground: 0 0% 98%;
+    
+    /* Borders & Inputs */
+    --border: 0 0% 15%;
+    --input: 0 0% 15%;
+    --ring: 0 0% 60%;
+    
+    /* Radius - Sharp, Editorial */
+    --radius: 0px;
+    
+    /* =====================
+       CINEMATIC TOKENS
+       ===================== */
+    
+    /* Shadows - Subtle, Luxurious */
+    --shadow-soft: 0 4px 30px hsl(0 0% 0% / 0.3);
+    --shadow-elegant: 0 20px 50px hsl(0 0% 0% / 0.5);
+    --shadow-glow: 0 0 80px hsl(0 0% 100% / 0.03);
+    
+    /* Transitions - Cinematic Timing */
+    --transition-slow: 0.8s cubic-bezier(0.16, 1, 0.3, 1);
+    --transition-smooth: 0.5s cubic-bezier(0.25, 0.1, 0.25, 1);
+    --transition-elegant: 1.2s cubic-bezier(0.19, 1, 0.22, 1);
+    
+    /* Typography Scale - Editorial */
+    --font-display: 'Bebas Neue', sans-serif;
+    --font-body: 'Inter', sans-serif;
+    
+    /* Spacing - Generous Whitespace */
+    --space-section: 12rem;
+    --space-element: 4rem;
+  }
+
+  /* Dark mode is default for this cinematic theme */
+  .dark {
+    --background: 0 0% 2%;
+    --foreground: 0 0% 98%;
+    --card: 0 0% 4%;
+    --card-foreground: 0 0% 98%;
+    --popover: 0 0% 4%;
+    --popover-foreground: 0 0% 98%;
+    --primary: 0 0% 98%;
+    --primary-foreground: 0 0% 2%;
+    --secondary: 0 0% 12%;
+    --secondary-foreground: 0 0% 85%;
+    --muted: 0 0% 8%;
+    --muted-foreground: 0 0% 55%;
+    --accent: 0 0% 15%;
+    --accent-foreground: 0 0% 95%;
+    --destructive: 0 62% 50%;
+    --destructive-foreground: 0 0% 98%;
+    --border: 0 0% 15%;
+    --input: 0 0% 15%;
+    --ring: 0 0% 60%;
+  }
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+
+  html {
+    scroll-behavior: smooth;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
+  }
+
+  body {
+    @apply bg-background text-foreground;
+    font-family: var(--font-body);
+    overflow-x: hidden;
+  }
+
+  /* Typography Base */
+  h1, h2, h3, h4, h5, h6 {
+    font-family: var(--font-display);
+    letter-spacing: 0.02em;
+    text-transform: uppercase;
+  }
+
+  ::selection {
+    background: hsl(var(--foreground));
+    color: hsl(var(--background));
+  }
 }
 
-code {
-    font-family:
-        source-code-pro, Menlo, Monaco, Consolas, "Courier New", monospace;
+@layer components {
+  /* Editorial Title Styles */
+  .title-hero {
+    font-family: var(--font-display);
+    font-size: clamp(4rem, 15vw, 14rem);
+    line-height: 0.85;
+    letter-spacing: -0.02em;
+    text-transform: uppercase;
+  }
+
+  .title-section {
+    font-family: var(--font-display);
+    font-size: clamp(2rem, 6vw, 5rem);
+    line-height: 1;
+    letter-spacing: 0.3em;
+    text-transform: uppercase;
+  }
+
+  .title-work {
+    font-family: var(--font-display);
+    font-size: clamp(2rem, 5vw, 4rem);
+    line-height: 1.1;
+    text-transform: uppercase;
+  }
+
+  /* Body Text - Editorial */
+  .text-editorial {
+    font-family: var(--font-body);
+    font-size: clamp(1rem, 1.2vw, 1.25rem);
+    line-height: 1.8;
+    font-weight: 300;
+    color: hsl(var(--muted-foreground));
+  }
+
+  .text-label {
+    font-family: var(--font-body);
+    font-size: 0.75rem;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: hsl(var(--muted-foreground));
+  }
+
+  /* Video Overlay */
+  .video-overlay {
+    background: linear-gradient(
+      to bottom,
+      hsl(0 0% 0% / 0.3) 0%,
+      hsl(0 0% 0% / 0.1) 50%,
+      hsl(0 0% 0% / 0.6) 100%
+    );
+  }
+
+  /* Premium Hover Effects */
+  .hover-lift {
+    transition: transform var(--transition-smooth), opacity var(--transition-smooth);
+  }
+
+  .hover-lift:hover {
+    transform: translateY(-4px);
+    opacity: 0.9;
+  }
+
+  /* Scroll Indicator Animation */
+  @keyframes scroll-pulse {
+    0%, 100% {
+      opacity: 0.3;
+      transform: translateY(0);
+    }
+    50% {
+      opacity: 1;
+      transform: translateY(8px);
+    }
+  }
+
+  .scroll-indicator {
+    animation: scroll-pulse 2s ease-in-out infinite;
+  }
+
+  /* Line Reveal Animation */
+  .line-reveal {
+    position: relative;
+    overflow: hidden;
+  }
+
+  .line-reveal::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    height: 1px;
+    background: hsl(var(--foreground));
+    transform: scaleX(0);
+    transform-origin: right;
+    transition: transform var(--transition-elegant);
+  }
+
+  .line-reveal:hover::after {
+    transform: scaleX(1);
+    transform-origin: left;
+  }
+
+  /* Card Editorial Style */
+  .card-editorial {
+    background: transparent;
+    transition: all var(--transition-smooth);
+  }
+
+  .card-editorial:hover {
+    background: hsl(var(--muted) / 0.3);
+  }
+
+  /* Cinematic Image */
+  .img-cinematic {
+    filter: grayscale(30%) contrast(1.05);
+    transition: filter var(--transition-slow), transform var(--transition-slow);
+  }
+
+  .img-cinematic:hover {
+    filter: grayscale(0%) contrast(1);
+    transform: scale(1.02);
+  }
 }
 
+@layer utilities {
+  /* Custom spacings */
+  .py-section {
+    padding-top: var(--space-section);
+    padding-bottom: var(--space-section);
+  }
+
+  .mb-element {
+    margin-bottom: var(--space-element);
+  }
+
+  /* Smooth scroll container for Lenis */
+  .smooth-scroll {
+    scroll-behavior: smooth;
+  }
+
+  /* Noise texture overlay */
+  .noise-overlay::before {
+    content: '';
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    opacity: 0.03;
+    pointer-events: none;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E");
+    z-index: 9999;
+  }
+}
+
+/* Debug wrapper compatibility */
 @layer base {
-    :root {
-        --background: 0 0% 100%;
-        --foreground: 0 0% 3.9%;
-        --card: 0 0% 100%;
-        --card-foreground: 0 0% 3.9%;
-        --popover: 0 0% 100%;
-        --popover-foreground: 0 0% 3.9%;
-        --primary: 0 0% 9%;
-        --primary-foreground: 0 0% 98%;
-        --secondary: 0 0% 96.1%;
-        --secondary-foreground: 0 0% 9%;
-        --muted: 0 0% 96.1%;
-        --muted-foreground: 0 0% 45.1%;
-        --accent: 0 0% 96.1%;
-        --accent-foreground: 0 0% 9%;
-        --destructive: 0 84.2% 60.2%;
-        --destructive-foreground: 0 0% 98%;
-        --border: 0 0% 89.8%;
-        --input: 0 0% 89.8%;
-        --ring: 0 0% 3.9%;
-        --chart-1: 12 76% 61%;
-        --chart-2: 173 58% 39%;
-        --chart-3: 197 37% 24%;
-        --chart-4: 43 74% 66%;
-        --chart-5: 27 87% 67%;
-        --radius: 0.5rem;
-    }
-    .dark {
-        --background: 0 0% 3.9%;
-        --foreground: 0 0% 98%;
-        --card: 0 0% 3.9%;
-        --card-foreground: 0 0% 98%;
-        --popover: 0 0% 3.9%;
-        --popover-foreground: 0 0% 98%;
-        --primary: 0 0% 98%;
-        --primary-foreground: 0 0% 9%;
-        --secondary: 0 0% 14.9%;
-        --secondary-foreground: 0 0% 98%;
-        --muted: 0 0% 14.9%;
-        --muted-foreground: 0 0% 63.9%;
-        --accent: 0 0% 14.9%;
-        --accent-foreground: 0 0% 98%;
-        --destructive: 0 62.8% 30.6%;
-        --destructive-foreground: 0 0% 98%;
-        --border: 0 0% 14.9%;
-        --input: 0 0% 14.9%;
-        --ring: 0 0% 83.1%;
-        --chart-1: 220 70% 50%;
-        --chart-2: 160 60% 45%;
-        --chart-3: 30 80% 55%;
-        --chart-4: 280 65% 60%;
-        --chart-5: 340 75% 55%;
-    }
-}
-
-@layer base {
-    * {
-        @apply border-border;
-    }
-    body {
-        @apply bg-background text-foreground;
-    }
-}
-
-@layer base {
-    [data-debug-wrapper="true"] {
-        display: contents !important;
-    }
-
-    [data-debug-wrapper="true"] > * {
-        margin-left: inherit;
-        margin-right: inherit;
-        margin-top: inherit;
-        margin-bottom: inherit;
-        padding-left: inherit;
-        padding-right: inherit;
-        padding-top: inherit;
-        padding-bottom: inherit;
-        column-gap: inherit;
-        row-gap: inherit;
-        gap: inherit;
-        border-left-width: inherit;
-        border-right-width: inherit;
-        border-top-width: inherit;
-        border-bottom-width: inherit;
-        border-left-style: inherit;
-        border-right-style: inherit;
-        border-top-style: inherit;
-        border-bottom-style: inherit;
-        border-left-color: inherit;
-        border-right-color: inherit;
-        border-top-color: inherit;
-        border-bottom-color: inherit;
-    }
+  [data-debug-wrapper="true"] {
+    display: contents !important;
+  }
 }
