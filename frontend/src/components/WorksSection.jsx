@@ -1,79 +1,185 @@
-import React, { useRef } from 'react';
-import { motion, useInView } from 'framer-motion';
-import { ArrowUpRight } from 'lucide-react';
+import React, { useRef, useLayoutEffect, useState, useEffect } from 'react';
+import gsap from 'gsap';
+import { ScrollTrigger } from 'gsap/ScrollTrigger';
+import { ArrowUpRight, Volume2, VolumeX } from 'lucide-react';
 import { Button } from './ui/button';
+import { AnimatedTitle } from './ui/AnimatedTitle';
+
+gsap.registerPlugin(ScrollTrigger);
 
 const works = [
   {
     id: 1,
     title: 'Overmono',
     category: 'Motion Design',
-    subcategory: 'Art Direction',
-    description:
-      "Overmono is a visual experiment inspired by the duo's raw, electronic energy. The project explores rhythm, distortion, and motion through a minimal, industrial-driven aesthetic.",
-    image: 'https://images.unsplash.com/photo-1709038391624-60f072505f5e?w=1200&q=80',
+    subcategory: 'Dirección de Arte',
+    description: "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.",
+    // Usamos la URL limpia del src del iframe
+    videoUrl: 'https://player.vimeo.com/video/1068632533?h=65cbc639f4', 
   },
   {
     id: 2,
     title: 'Likorn',
     category: 'Motion Design',
-    subcategory: 'Art Direction',
-    description:
-      'Likorn is a digital study exploring organic motion and sculptural forms. The project blends fluid simulations, subtle lighting, and minimal typography.',
-    image: 'https://images.unsplash.com/photo-1619344755866-f5c7ca79b2f6?w=1200&q=80',
+    subcategory: 'Dirección de Arte',
+    description: 'Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.',
+    videoUrl: 'https://player.vimeo.com/video/1039936378?h=b4c1a67576',
   },
   {
     id: 3,
     title: 'Solo Model',
     category: 'Motion Design',
-    subcategory: 'Art Direction',
-    description:
-      'Solo Model is a stripped-down visual study focused on presence, light, and form. The project reduces everything to its essentials — movement, contrast, and space.',
-    image: 'https://images.unsplash.com/photo-1471341971476-ae15ff5dd4ea?w=1200&q=80',
+    subcategory: 'Dirección de Arte',
+    description: 'Sed ut perspiciatis unde omnis iste natus error sit voluptatem accusantium doloremque laudantium, totam rem aperiam, eaque ipsa quae ab illo inventore veritatis et quasi architecto beatae vitae dicta sunt explicabo.',
+    videoUrl: 'https://player.vimeo.com/video/1068632533?h=65cbc639f4',
   },
   {
     id: 4,
     title: 'Ethereal Skiing',
     category: 'Motion Design',
-    subcategory: 'Art Direction',
-    description:
-      'Ethereal Skiing is a visual experiment capturing the weightlessness and speed of movement on snow. The project blends soft gradients and atmospheric particles.',
-    image: 'https://images.unsplash.com/photo-1615458509636-856366d3396e?w=1200&q=80',
+    subcategory: 'Dirección de Arte',
+    description: 'Nemo enim ipsam voluptatem quia voluptas sit aspernatur aut odit aut fugit, sed quia consequuntur magni dolores eos qui ratione voluptatem sequi nesciunt. Neque porro quisquam est, qui dolorem ipsum quia dolor sit amet.',
+    videoUrl: 'https://player.vimeo.com/video/1068632533?h=65cbc639f4',
   },
 ];
 
-const WorkCard = ({ work, index }) => {
-  const cardRef = useRef(null);
-  const isInView = useInView(cardRef, { once: true, margin: '-100px' });
-  const isEven = index % 2 === 0;
+const VideoPreview = ({ src, title, parallaxContainerRef }) => {
+  const videoRef = useRef(null);
+  const [isMuted, setIsMuted] = useState(true);
+
+  useLayoutEffect(() => {
+    const ctx = gsap.context(() => {
+      gsap.fromTo(videoRef.current, 
+         { yPercent: -15, scale: 1.1 },
+         { 
+           yPercent: 15, scale: 1, ease: "none",
+           scrollTrigger: { trigger: parallaxContainerRef.current, start: "top bottom", end: "bottom top", scrub: 0 }
+         }
+       );
+    });
+    return () => ctx.revert();
+  }, [parallaxContainerRef]);
+
+  const toggleMute = (e) => {
+    e.preventDefault();
+    e.stopPropagation();
+    setIsMuted(!isMuted);
+    
+    if (videoRef.current) {
+      // Si vamos a activar el sonido, ponemos volumen bajo (35%)
+      if (isMuted) videoRef.current.volume = 0.35;
+      
+      videoRef.current.muted = !isMuted;
+    }
+  };
 
   return (
-    <motion.article
-      ref={cardRef}
-      initial={{ opacity: 0, y: 80 }}
-      animate={isInView ? { opacity: 1, y: 0 } : { opacity: 0, y: 80 }}
-      transition={{ duration: 1, ease: [0.16, 1, 0.3, 1] }}
-      className={`group grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-16 items-center ${
-        !isEven ? 'lg:direction-rtl' : ''
-      }`}
-    >
-      {/* Image */}
-      <div
-        className={`relative overflow-hidden aspect-[4/3] cursor-pointer ${!isEven ? 'lg:order-2' : ''}`}
+    <div className="w-full h-[120%] -mt-[10%] relative">
+      <video
+        ref={videoRef}
+        src={src}
+        className="w-full h-full object-cover"
+        autoPlay loop playsInline muted={isMuted}
+      />
+      <MuteButton isMuted={isMuted} toggleMute={toggleMute} />
+    </div>
+  );
+};
+
+// Componente para VIMEO
+const VimeoPreview = ({ src, title, parallaxContainerRef }) => {
+  const iframeRef = useRef(null);
+  const [isMuted, setIsMuted] = useState(true);
+
+  // Limpiamos la URL y añadimos params para control total
+  // background=1 quita controles y pone loop/autoplay. api=1 permite postMessage.
+  const vimeoSrc = src.includes('?') 
+    ? `${src}&api=1&background=1&autoplay=1&loop=1&muted=1` 
+    : `${src}?api=1&background=1&autoplay=1&loop=1&muted=1`;
+
+  useLayoutEffect(() => {
+    const ctx = gsap.context(() => {
+      gsap.fromTo(iframeRef.current, 
+         { yPercent: -15, scale: 1.3 }, // Vimeo necesita un poco mas de escala para evitar bordes negros
+         { 
+           yPercent: 15, scale: 1.1, ease: "none",
+           scrollTrigger: { trigger: parallaxContainerRef.current, start: "top bottom", end: "bottom top", scrub: 0 }
+         }
+       );
+    });
+    return () => ctx.revert();
+  }, [parallaxContainerRef]);
+
+  const toggleMute = (e) => {
+    e.preventDefault();
+    e.stopPropagation();
+    
+    if (iframeRef.current) {
+      // Vimeo API via postMessage
+      const action = 'setVolume';
+      // Si estamos muteados y vamos a activar, enviamos 0.35 (35%). Si vamos a mutear, enviamos 0 (aunque el mute del player lo hace igual)
+      const value = isMuted ? 0.35 : 0; 
+      
+      const message = { method: action, value: value };
+      iframeRef.current.contentWindow.postMessage(JSON.stringify(message), '*');
+      setIsMuted(!isMuted);
+    }
+  };
+
+  return (
+    <div className="w-full h-[120%] -mt-[10%] relative bg-black">
+      <iframe
+        ref={iframeRef}
+        src={vimeoSrc}
+        className="w-full h-full object-cover pointer-events-none" // pointer-events-none evita que el mouse interactue con el iframe
+        title={title}
+        frameBorder="0"
+        allow="autoplay; fullscreen; picture-in-picture"
+      />
+      {/* Overlay transparente para capturar clicks si fuera necesario, aunque el boton esta fuera */}
+      <MuteButton isMuted={isMuted} toggleMute={toggleMute} />
+    </div>
+  );
+};
+
+const MuteButton = ({ isMuted, toggleMute }) => (
+  <button 
+    onClick={toggleMute}
+    className="absolute bottom-8 right-8 z-30 p-3 rounded-full bg-black/20 backdrop-blur-md text-white/70 hover:text-white hover:bg-black/40 transition-all duration-300 group-hover:opacity-100 md:opacity-0"
+    aria-label={isMuted ? "Unmute video" : "Mute video"}
+  >
+    {isMuted ? <VolumeX className="w-4 h-4" /> : <Volume2 className="w-4 h-4" />}
+  </button>
+);
+
+
+const WorkCard = ({ work, index }) => {
+  const isEven = index % 2 === 0;
+  const containerRef = useRef(null);
+
+  // Detectar si es Vimeo
+  const isVimeo = work.videoUrl.includes('vimeo');
+
+  return (
+    <article className={`group grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-16 items-center ${!isEven ? 'lg:direction-rtl' : ''}`}>
+      {/* Video Container */}
+      <div 
+        ref={containerRef}
+        className={`relative overflow-hidden aspect-[4/3] cursor-pointer ${!isEven ? 'lg:order-2' : ''} rounded-sm`}
       >
-        <motion.img
-          src={work.image}
-          alt={work.title}
-          className="w-full h-full object-cover img-cinematic"
-          whileHover={{ scale: 1.05 }}
-          transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1] }}
-        />
-        {/* Hover Overlay - pointer-events-none to not block interactions */}
-        <div className="absolute inset-0 bg-background/20 opacity-0 group-hover:opacity-100 transition-opacity duration-500 flex items-center justify-center pointer-events-none">
-          <div className="w-20 h-20 rounded-full border border-foreground/50 flex items-center justify-center scale-75 group-hover:scale-100 opacity-0 group-hover:opacity-100 transition-all duration-500">
-            <ArrowUpRight className="w-6 h-6 text-foreground" />
-          </div>
-        </div>
+        {isVimeo ? (
+          <VimeoPreview 
+            src={work.videoUrl} 
+            title={work.title} 
+            parallaxContainerRef={containerRef} 
+          />
+        ) : (
+          <VideoPreview 
+            src={work.videoUrl} 
+            title={work.title} 
+            parallaxContainerRef={containerRef} 
+          />
+        )}
       </div>
 
       {/* Content */}
@@ -83,18 +189,51 @@ const WorkCard = ({ work, index }) => {
           <span className="text-label text-muted-foreground/50">•</span>
           <span className="text-label">{work.subcategory}</span>
         </div>
-        <h3 className="title-work text-foreground mb-6 group-hover:text-muted-foreground transition-colors duration-500">
-          {work.title}
-        </h3>
-        <p className="text-editorial max-w-lg">{work.description}</p>
+        
+        <div className="overflow-hidden mb-6">
+           <h3 className="title-work text-foreground text-[8vw] leading-[0.85] tracking-tighter uppercase group-hover:text-muted-foreground transition-colors duration-500 reveal-item">
+             {work.title}
+           </h3>
+        </div>
+        
+        <div className="overflow-hidden">
+           <p className="text-editorial max-w-lg reveal-item inline-block">
+             {work.description}
+           </p>
+        </div>
       </div>
-    </motion.article>
+    </article>
   );
 };
 
 export const WorksSection = () => {
   const sectionRef = useRef(null);
-  const titleInView = useInView(sectionRef, { once: true, margin: '-100px' });
+
+  useLayoutEffect(() => {
+    const ctx = gsap.context(() => {
+      // Reveal anims for texts inside works
+      const items = gsap.utils.toArray('.reveal-item');
+      items.forEach(item => {
+         gsap.fromTo(item,
+           { y: "100%", skewY: 5 },
+           { 
+             y: "0%", 
+             skewY: 0,
+             duration: 1.2,
+             ease: "power3.out",
+             scrollTrigger: {
+               trigger: item,
+               start: "top 95%"
+             }
+           }
+         );
+      });
+      
+
+
+    }, sectionRef);
+    return () => ctx.revert();
+  }, []);
 
   return (
     <section
@@ -104,14 +243,12 @@ export const WorksSection = () => {
     >
       <div className="max-w-[1800px] mx-auto px-6 md:px-12 lg:px-20">
         {/* Section Title */}
-        <motion.div
-          initial={{ opacity: 0, y: 40 }}
-          animate={titleInView ? { opacity: 1, y: 0 } : { opacity: 0, y: 40 }}
-          transition={{ duration: 1, ease: [0.16, 1, 0.3, 1] }}
-          className="mb-24 md:mb-32"
-        >
-          <h2 className="title-section text-foreground">Selected Works</h2>
-        </motion.div>
+        <div className="mb-24 md:mb-32">
+          <AnimatedTitle 
+            text="Selected Works" 
+            className="title-section text-foreground text-[12vw] leading-[2] tracking-tighter uppercase"
+          />
+        </div>
 
         {/* Works Grid */}
         <div className="space-y-24 md:space-y-32 lg:space-y-48">
@@ -121,13 +258,7 @@ export const WorksSection = () => {
         </div>
 
         {/* View All Button */}
-        <motion.div
-          initial={{ opacity: 0, y: 40 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true, margin: '-50px' }}
-          transition={{ duration: 1, ease: [0.16, 1, 0.3, 1] }}
-          className="mt-24 md:mt-32 text-center"
-        >
+        <div className="mt-24 md:mt-32 text-center">
           <Button
             variant="outline"
             size="lg"
@@ -136,7 +267,7 @@ export const WorksSection = () => {
             View All Work
             <ArrowUpRight className="ml-2 w-4 h-4 group-hover:translate-x-1 group-hover:-translate-y-1 transition-transform duration-300" />
           </Button>
-        </motion.div>
+        </div>
       </div>
     </section>
   );

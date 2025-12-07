@@ -1,6 +1,6 @@
 import React from 'react';
 import Navigation from '../components/Navigation';
-import HeroSection from '../components/HeroSection';
+import MainHero from '../components/MainHero';
 import MissionSection from '../components/MissionSection';
 import WorksSection from '../components/WorksSection';
 import AboutSection from '../components/AboutSection';
@@ -11,7 +11,7 @@ export default function HomePage() {
   return (
     <main className="bg-background min-h-screen">
       <Navigation />
-      <HeroSection />
+      <MainHero />
       <MissionSection />
       <WorksSection />
       <AboutSection />

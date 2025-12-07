@@ -1,24 +1,25 @@
 import React, { useRef } from 'react';
 import { motion, useInView } from 'framer-motion';
 import { Separator } from './ui/separator';
+import { AnimatedTitle } from './ui/AnimatedTitle';
 
 const founders = [
   {
     name: 'Valérian Kinyock',
     role: 'Creative Developer',
-    quote: 'We believe in precision and empathy in equal measure.',
+    quote: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit.',
     image: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=600&q=80',
   },
   {
     name: 'Sophie Nguyen',
     role: 'Producer & Partner',
-    quote: 'Every detail matters — rhythm, type, proportion.',
+    quote: 'Sed do eiusmod tempor incididunt ut labore et dolore.',
     image: 'https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=600&q=80',
   },
   {
     name: 'Nina Lens',
     role: 'Editorial Designer',
-    quote: 'We move ideas forward through design and motion.',
+    quote: 'Ut enim ad minim veniam, quis nostrud exercitation.',
     image: 'https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=600&q=80',
   },
 ];
@@ -95,16 +96,14 @@ export const AboutSection = () => {
       ref={sectionRef}
       className="relative bg-background py-32 md:py-48"
     >
-      <div className="max-w-[1800px] mx-auto px-6 md:px-12 lg:px-20">
+      <div className="max-w-[1800px] mx-auto px-6 md:px-10 lg:px-22">
         {/* Section Title */}
-        <motion.div
-          initial={{ opacity: 0, y: 40 }}
-          animate={isInView ? { opacity: 1, y: 0 } : { opacity: 0, y: 40 }}
-          transition={{ duration: 1, ease: [0.16, 1, 0.3, 1] }}
-          className="mb-24 md:mb-32"
-        >
-          <h2 className="title-section text-foreground">Who We Are</h2>
-        </motion.div>
+        <div className="mb-24 md:mb-32">
+          <AnimatedTitle 
+            text="ESTUDIO" 
+            className="title-section text-foreground text-[12vw] leading-[0.85] tracking-tighter uppercase"
+          />
+        </div>
 
         {/* Intro Text */}
         <motion.div
@@ -115,23 +114,22 @@ export const AboutSection = () => {
         >
           <motion.div variants={itemVariants}>
             <p className="text-xl md:text-2xl lg:text-3xl font-light leading-relaxed text-foreground">
-              We are a creative development studio shaping digital work where
-              clarity meets intensity — merging design, engineering, and motion
-              into experiences that feel alive.
+              Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod
+              tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim
+              veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip.
             </p>
           </motion.div>
 
           <motion.div variants={itemVariants}>
             <span className="text-label mb-6 block">Approach</span>
             <p className="text-editorial">
-              We approach every project as a system — where clarity, rhythm, and
-              motion define how ideas take shape. We design not just for screens,
-              but for the way people feel and interact.
+              Duis aute irure dolor in reprehenderit in voluptate velit esse cillum
+              dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non
+              proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
             </p>
             <p className="text-editorial mt-6">
-              Our process blends conceptual thinking with technical precision,
-              turning stories into digital experiences that live across time and
-              media.
+              Sed ut perspiciatis unde omnis iste natus error sit voluptatem
+              accusantium doloremque laudantium, totam rem aperiam, eaque ipsa quae.
             </p>
           </motion.div>
         </motion.div>
@@ -153,7 +151,7 @@ export const AboutSection = () => {
           transition={{ delay: 0.5, duration: 1 }}
           className="text-label mb-12 block"
         >
-          Founders
+          The Crew
         </motion.span>
 
         {/* Founders Grid */}
@@ -173,13 +171,14 @@ export const AboutSection = () => {
         >
           <span className="text-label mb-6 block">Collaboration</span>
           <p className="text-xl md:text-2xl font-light leading-relaxed text-foreground">
-            We work with founders, cultural institutions and creative brands to
-            design digital systems with clarity and emotion.
+            At vero eos et accusamus et iusto odio dignissimos ducimus qui blanditiis
+            praesentium voluptatum deleniti atque corrupti quos dolores et quas
+            molestias excepturi sint occaecati cupiditate non provident.
           </p>
           <p className="text-editorial mt-6">
-            Whether you&apos;re building a new brand, rethinking your identity or
-            crafting your digital presence — we help translate vision into form,
-            movement and code.
+            Similique sunt in culpa qui officia deserunt mollitia animi, id est
+            laborum et dolorum fuga. Et harum quidem rerum facilis est et expedita
+            distinctio. Nam libero tempore, cum soluta nobis est eligendi optio.
           </p>
         </motion.div>
       </div>

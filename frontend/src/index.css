@@ -1,4 +1,4 @@
-@import url('https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Inter:wght@300;400;500;600&display=swap');
+@import url("https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Inter:wght@300;400;500;600&display=swap");
 
 @tailwind base;
 @tailwind components;
@@ -12,67 +12,62 @@
 @layer base {
   :root {
     /* Core Colors - Monochromatic Luxury */
-    --background: 0 0% 2%;          /* Deep black */
-    --foreground: 0 0% 98%;          /* Pure white */
-    
+    --background: 0 0% 2%; /* Deep black */
+    --foreground: 0 0% 98%; /* Pure white */
+
     /* Card & Surface Colors */
     --card: 0 0% 4%;
     --card-foreground: 0 0% 98%;
     --popover: 0 0% 4%;
     --popover-foreground: 0 0% 98%;
-    
+
     /* Primary - Editorial White */
     --primary: 0 0% 98%;
     --primary-foreground: 0 0% 2%;
-    
+
     /* Secondary - Elegant Gray */
     --secondary: 0 0% 12%;
     --secondary-foreground: 0 0% 85%;
-    
+
     /* Muted - Subtle Grays */
     --muted: 0 0% 8%;
     --muted-foreground: 0 0% 55%;
-    
+
     /* Accent - Warm Gray */
     --accent: 0 0% 15%;
     --accent-foreground: 0 0% 95%;
-    
+
     /* States */
     --destructive: 0 62% 50%;
     --destructive-foreground: 0 0% 98%;
-    
+
     /* Borders & Inputs */
     --border: 0 0% 15%;
     --input: 0 0% 15%;
     --ring: 0 0% 60%;
-    
+
     /* Radius - Sharp, Editorial */
     --radius: 0px;
-    
+
     /* =====================
        CINEMATIC TOKENS
        ===================== */
-    
+
     /* Shadows - Subtle, Luxurious */
     --shadow-soft: 0 4px 30px hsl(0 0% 0% / 0.3);
     --shadow-elegant: 0 20px 50px hsl(0 0% 0% / 0.5);
     --shadow-glow: 0 0 80px hsl(0 0% 100% / 0.03);
-    
+
     /* Transitions - Cinematic Timing */
     --transition-slow: 0.8s cubic-bezier(0.16, 1, 0.3, 1);
     --transition-smooth: 0.5s cubic-bezier(0.25, 0.1, 0.25, 1);
     --transition-elegant: 1.2s cubic-bezier(0.19, 1, 0.22, 1);
-    
+
     /* Typography Scale - Editorial */
-    --font-display: 'Bebas Neue', sans-serif;
-    --font-body: 'Inter', sans-serif;
-    
-    /* Spacing - Generous Whitespace */
-    --space-section: 12rem;
-    --space-element: 4rem;
+    --font-display: "Bebas Neue", sans-serif;
+    --font-body: "Inter", sans-serif;
   }
 
-  /* Dark mode is default for this cinematic theme */
   .dark {
     --background: 0 0% 2%;
     --foreground: 0 0% 98%;
@@ -94,9 +89,7 @@
     --input: 0 0% 15%;
     --ring: 0 0% 60%;
   }
-}
 
-@layer base {
   * {
     @apply border-border;
   }
@@ -286,4 +279,41 @@
   [data-debug-wrapper="true"] {
     display: contents !important;
   }
+}
+
+/* LENIS RECOMMENDED CSS */
+html.lenis,
+html.lenis body {
+  height: auto;
+}
+.lenis.lenis-smooth {
+  scroll-behavior: auto !important;
+}
+.lenis.lenis-smooth [data-lenis-prevent] {
+  overscroll-behavior: contain;
+}
+.lenis.lenis-stopped {
+  overflow: hidden;
+}
+.lenis.lenis-smooth iframe,
+.lenis.lenis-smooth [data-lenis-prevent] {
+  pointer-events: none;
+}
+
+/* ===========================
+   CUSTOM PREMIUM SCROLLBAR
+   =========================== */
+::-webkit-scrollbar {
+  width: 5px;
+  height: 5px;
+  background-color: #050505;
+}
+
+::-webkit-scrollbar-thumb {
+  background-color: #333;
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background-color: #555;
 }

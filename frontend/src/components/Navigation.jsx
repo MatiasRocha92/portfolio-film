@@ -4,9 +4,9 @@ import { Menu, X } from 'lucide-react';
 import { Button } from './ui/button';
 
 const navLinks = [
-  { label: 'Work', href: '#works' },
-  { label: 'About', href: '#about' },
-  { label: 'Contact', href: '#contact' },
+  { label: 'Trabajos', href: '#works' },
+  { label: 'Estudio', href: '#about' },
+  { label: 'Contacto', href: '#contact' },
 ];
 
 export const Navigation = () => {
@@ -15,7 +15,8 @@ export const Navigation = () => {
 
   useEffect(() => {
     const handleScroll = () => {
-      setIsScrolled(window.scrollY > 100);
+      // El menú solo aparece cuando pasamos la altura de la pantalla (Hero completo)
+      setIsScrolled(window.scrollY > window.innerHeight - 50);
     };
 
     window.addEventListener('scroll', handleScroll);
@@ -34,12 +35,15 @@ export const Navigation = () => {
     <>
       <motion.nav
         initial={{ y: -100, opacity: 0 }}
-        animate={{ y: 0, opacity: 1 }}
-        transition={{ duration: 1, ease: [0.16, 1, 0.3, 1], delay: 0.5 }}
-        className={`fixed top-0 left-0 right-0 z-50 transition-all duration-700 ${
+        animate={{ 
+          y: isScrolled ? 0 : -100, 
+          opacity: isScrolled ? 1 : 0 
+        }}
+        transition={{ duration: 1, ease: [0.16, 1, 0.3, 1] }}
+        className={`fixed top-0 left-0 right-0 z-50 transition-colors duration-700 ${
           isScrolled
-            ? 'bg-background/80 backdrop-blur-md border-b border-border/30'
-            : 'bg-transparent'
+            ? 'bg-background/80 backdrop-blur-md border-b border-border/30 pointer-events-auto'
+            : 'bg-transparent pointer-events-none'
         }`}
       >
         <div className="max-w-[1800px] mx-auto px-6 md:px-12 lg:px-20">
@@ -49,7 +53,7 @@ export const Navigation = () => {
               href="#"
               className="font-display text-2xl md:text-3xl tracking-wider text-foreground hover:opacity-70 transition-opacity duration-500"
             >
-              LUMIÈRE
+              NAHUEL
             </a>
 
             {/* Desktop Navigation */}
@@ -91,7 +95,7 @@ export const Navigation = () => {
             <div className="flex flex-col h-full px-6 py-8">
               <div className="flex justify-between items-center relative z-10">
                 <span className="font-display text-2xl tracking-wider text-foreground">
-                  LUMIÈRE
+                  NAHUEL
                 </span>
                 <Button
                   variant="ghost"
