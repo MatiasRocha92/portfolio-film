@@ -85,6 +85,36 @@ uvicorn server:app --reload
 
 The API will be available at [http://localhost:8000](http://localhost:8000).
 
+## 🔌 API Documentation
+
+Once the backend is running, you can interact with the following endpoints:
+
+### Contact
+
+- **POST** `/api/contact`
+  - **Body**: `{ "email": "user@example.com" }`
+  - **Description**: Stores contact form submissions.
+
+### Projects
+
+- **GET** `/api/projects`
+  - **Description**: Retrieves all projects to be displayed in the "Selected Works" section.
+- **POST** `/api/projects`
+  - **Body**:
+    ```json
+    {
+      "title": "Project Title",
+      "category": "Motion Design",
+      "subcategory": "Art Direction",
+      "description": "Project description...",
+      "videoUrl": "https://vimeo.com/..."
+    }
+    ```
+  - **Description**: Adds a new project to the portfolio.
+
+> [!TIP]
+> **Swagger UI**: You can view the interactive API documentation at [http://localhost:8000/docs](http://localhost:8000/docs) when the server is running.
+
 ## 📂 Project Structure
 
 ```bash
