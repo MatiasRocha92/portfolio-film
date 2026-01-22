@@ -215,7 +215,15 @@ export const WorksSection = () => {
   useEffect(() => {
     const fetchWorks = async () => {
       try {
-        const response = await axios.get('http://localhost:8000/api/projects');
+        const apiUrl = process.env.REACT_APP_API_URL;
+        
+        // Only fetch if API URL is configured
+        if (!apiUrl) {
+          setLoading(false);
+          return;
+        }
+        
+        const response = await axios.get(`${apiUrl}/api/projects`);
         if (response.data && response.data.length > 0) {
           setWorks(response.data);
         }

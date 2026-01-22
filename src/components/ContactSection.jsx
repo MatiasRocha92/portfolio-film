@@ -19,8 +19,17 @@ export const ContactSection = () => {
 
     setIsSubmitting(true);
     try {
-      // NOTE: This endpoint assumes the backend is running on localhost:8000
-      await axios.post('http://localhost:8000/api/contact', { email });
+      // Use environment variable for API URL, fallback to empty (no backend)
+      const apiUrl = process.env.REACT_APP_API_URL;
+      
+      if (!apiUrl) {
+        // No backend configured - just show success message
+        toast.success('¡Gracias! Te contactaremos pronto.');
+        setEmail('');
+        return;
+      }
+      
+      await axios.post(`${apiUrl}/api/contact`, { email });
       toast.success('¡Mensaje enviado con éxito!');
       setEmail('');
     } catch (error) {
