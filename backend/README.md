@@ -29,7 +29,7 @@ Edit `.env` with your MongoDB connection string and other settings:
 ```env
 MONGO_URL=mongodb://localhost:27017/portfolio
 # or for MongoDB Atlas:
-# MONGO_URL=mongodb+srv://username:password@cluster.mongodb.net/portfolio
+# MONGO_URL=mongodb+srv://<YOUR_USERNAME>:<YOUR_PASSWORD>@<YOUR_CLUSTER>.mongodb.net/portfolio
 
 API_HOST=0.0.0.0
 API_PORT=8000
@@ -78,10 +78,10 @@ FastAPI automatically generates interactive API documentation:
   ```json
   {
     "title": "Project Title",
-    "category": "Motion Design",
-    "subcategory": "Art Direction",
+    "category": "category_name",
+    "subcategory": "subcategory_name",
     "description": "Project description...",
-    "videoUrl": "https://vimeo.com/..."
+    "videoUrl": "https://vimeo.com/video_id"
   }
   ```
 - **DELETE** `/api/projects/{id}` - Delete project (admin)
@@ -114,11 +114,11 @@ Example project document:
 ```json
 {
   "id": 1,
-  "title": "Overmono",
-  "category": "Motion Design",
-  "subcategory": "Dirección de Arte",
-  "description": "Project description here...",
-  "videoUrl": "https://player.vimeo.com/video/1068632533?h=65cbc639f4"
+  "title": "Example Project",
+  "category": "Category",
+  "subcategory": "Subcategory",
+  "description": "Description placeholder...",
+  "videoUrl": "https://player.vimeo.com/video/..."
 }
 ```
 
