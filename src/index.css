@@ -1,4 +1,4 @@
-@import url("https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Inter:wght@300;400;500;600&display=swap");
+@import url('https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Inter:wght@300;400;500;600&display=swap');
 
 @tailwind base;
 @tailwind components;
@@ -66,6 +66,10 @@
     /* Typography Scale - Editorial */
     --font-display: "Bebas Neue", sans-serif;
     --font-body: "Inter", sans-serif;
+
+    /* Spacing Scale - Editorial */
+    --space-section: clamp(4rem, 10vw, 8rem);
+    --space-element: clamp(1.5rem, 3vw, 3rem);
   }
 
   .dark {
