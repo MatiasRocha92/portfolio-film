@@ -2,8 +2,7 @@
 
 A high-performance, visually immersive portfolio website designed for a professional filmmaker. This project leverages modern web technologies to deliver a cinematic user experience, featuring smooth animations, a responsive design, and a clean aesthetic.
 
-![Portfolio Preview](https://github.com/MatiasRocha92/portfolio-film/raw/main/frontend/public/assets/img/og-image.png)
-_(Note: Replace the link above with a real screenshot if available)_
+![portfolio-preview](image.png)
 
 ## 🚀 Features
 
