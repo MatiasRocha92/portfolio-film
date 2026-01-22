@@ -1,20 +1,20 @@
 import React, { useRef, useLayoutEffect, useState, useEffect } from 'react';
 import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
-import { ArrowUpRight, Volume2, VolumeX } from 'lucide-react';
+import { ArrowUpRight, Volume2, VolumeX, Loader2 } from 'lucide-react';
 import { Button } from './ui/button';
 import { AnimatedTitle } from './ui/AnimatedTitle';
+import axios from 'axios';
 
 gsap.registerPlugin(ScrollTrigger);
 
-const works = [
+const defaultWorks = [
   {
     id: 1,
     title: 'Overmono',
     category: 'Motion Design',
     subcategory: 'Dirección de Arte',
     description: "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.",
-    // Usamos la URL limpia del src del iframe
     videoUrl: 'https://player.vimeo.com/video/1068632533?h=65cbc639f4', 
   },
   {
@@ -48,6 +48,9 @@ const VideoPreview = ({ src, title, parallaxContainerRef }) => {
   const [isMuted, setIsMuted] = useState(true);
 
   useLayoutEffect(() => {
+    // Only animate if element exists
+    if (!videoRef.current || !parallaxContainerRef.current) return;
+
     const ctx = gsap.context(() => {
       gsap.fromTo(videoRef.current, 
          { yPercent: -15, scale: 1.1 },
@@ -92,15 +95,16 @@ const VimeoPreview = ({ src, title, parallaxContainerRef }) => {
   const [isMuted, setIsMuted] = useState(true);
 
   // Limpiamos la URL y añadimos params para control total
-  // background=1 quita controles y pone loop/autoplay. api=1 permite postMessage.
   const vimeoSrc = src.includes('?') 
     ? `${src}&api=1&background=1&autoplay=1&loop=1&muted=1` 
     : `${src}?api=1&background=1&autoplay=1&loop=1&muted=1`;
 
   useLayoutEffect(() => {
+    if (!iframeRef.current || !parallaxContainerRef.current) return;
+
     const ctx = gsap.context(() => {
       gsap.fromTo(iframeRef.current, 
-         { yPercent: -15, scale: 1.3 }, // Vimeo necesita un poco mas de escala para evitar bordes negros
+         { yPercent: -15, scale: 1.3 }, 
          { 
            yPercent: 15, scale: 1.1, ease: "none",
            scrollTrigger: { trigger: parallaxContainerRef.current, start: "top bottom", end: "bottom top", scrub: 0 }
@@ -117,7 +121,6 @@ const VimeoPreview = ({ src, title, parallaxContainerRef }) => {
     if (iframeRef.current) {
       // Vimeo API via postMessage
       const action = 'setVolume';
-      // Si estamos muteados y vamos a activar, enviamos 0.35 (35%). Si vamos a mutear, enviamos 0 (aunque el mute del player lo hace igual)
       const value = isMuted ? 0.35 : 0; 
       
       const message = { method: action, value: value };
@@ -131,12 +134,11 @@ const VimeoPreview = ({ src, title, parallaxContainerRef }) => {
       <iframe
         ref={iframeRef}
         src={vimeoSrc}
-        className="w-full h-full object-cover pointer-events-none" // pointer-events-none evita que el mouse interactue con el iframe
+        className="w-full h-full object-cover pointer-events-none" 
         title={title}
         frameBorder="0"
         allow="autoplay; fullscreen; picture-in-picture"
       />
-      {/* Overlay transparente para capturar clicks si fuera necesario, aunque el boton esta fuera */}
       <MuteButton isMuted={isMuted} toggleMute={toggleMute} />
     </div>
   );
@@ -156,8 +158,6 @@ const MuteButton = ({ isMuted, toggleMute }) => (
 const WorkCard = ({ work, index }) => {
   const isEven = index % 2 === 0;
   const containerRef = useRef(null);
-
-  // Detectar si es Vimeo
   const isVimeo = work.videoUrl.includes('vimeo');
 
   return (
@@ -208,8 +208,30 @@ const WorkCard = ({ work, index }) => {
 
 export const WorksSection = () => {
   const sectionRef = useRef(null);
+  const [works, setWorks] = useState(defaultWorks);
+  const [loading, setLoading] = useState(true);
+
+  // Fetch works from API
+  useEffect(() => {
+    const fetchWorks = async () => {
+      try {
+        const response = await axios.get('http://localhost:8000/api/projects');
+        if (response.data && response.data.length > 0) {
+          setWorks(response.data);
+        }
+      } catch (error) {
+        console.log('Backend not available, using default works.');
+      } finally {
+        setLoading(false);
+      }
+    };
+    
+    fetchWorks();
+  }, []);
 
   useLayoutEffect(() => {
+    if (loading) return; // Wait for loading to finish
+
     const ctx = gsap.context(() => {
       // Reveal anims for texts inside works
       const items = gsap.utils.toArray('.reveal-item');
@@ -228,12 +250,17 @@ export const WorksSection = () => {
            }
          );
       });
-      
-
-
     }, sectionRef);
     return () => ctx.revert();
-  }, []);
+  }, [loading, works]);
+
+  if (loading) {
+     return (
+        <section className="h-[50vh] flex items-center justify-center bg-background">
+           <Loader2 className="w-10 h-10 animate-spin text-foreground" />
+        </section>
+     );
+  }
 
   return (
     <section

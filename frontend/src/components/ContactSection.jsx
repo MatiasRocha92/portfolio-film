@@ -1,10 +1,36 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { ArrowUpRight, Mail } from 'lucide-react';
 import { Button } from './ui/button';
 import { Input } from './ui/input';
 import { AnimatedTitle } from './ui/AnimatedTitle';
+import axios from 'axios';
+import { toast } from 'sonner';
 
 export const ContactSection = () => {
+  const [email, setEmail] = useState('');
+  const [isSubmitting, setIsSubmitting] = useState(false);
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    if (!email) {
+      toast.error('Por favor ingresa un email');
+      return;
+    }
+
+    setIsSubmitting(true);
+    try {
+      // NOTE: This endpoint assumes the backend is running on localhost:8000
+      await axios.post('http://localhost:8000/api/contact', { email });
+      toast.success('¡Mensaje enviado con éxito!');
+      setEmail('');
+    } catch (error) {
+      console.error('Error sending message:', error);
+      toast.error('Hubo un error al enviar el mensaje. Intenta nuevamente.');
+    } finally {
+      setIsSubmitting(false);
+    }
+  };
+
   return (
     <section
       id="contact"
@@ -37,15 +63,18 @@ export const ContactSection = () => {
                    <Mail className="w-6 h-6" />
                 </div>
                 contacto@nahuelfilmmaker.com
-             </a>
+              </a>
           </div>
 
           {/* Right: Minimal Form */}
-          <form className="space-y-8 w-full max-w-lg">
+          <form onSubmit={handleSubmit} className="space-y-8 w-full max-w-lg">
              <div className="group">
                 <Input
                   type="email"
                   placeholder="Tu Email"
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
+                  disabled={isSubmitting}
                   className="bg-transparent border-0 border-b-2 border-foreground/10 px-0 py-8 text-2xl placeholder:text-foreground/20 focus-visible:ring-0 focus-visible:border-foreground transition-colors"
                 />
              </div>
@@ -53,9 +82,10 @@ export const ContactSection = () => {
              <div className="pt-8">
                 <Button
                   size="lg"
+                  disabled={isSubmitting}
                   className="w-full h-16 text-lg bg-foreground text-background hover:bg-foreground/90 rounded-full flex justify-between items-center px-8 group"
                 >
-                  Enviar Mensaje
+                  {isSubmitting ? 'Enviando...' : 'Enviar Mensaje'}
                   <div className="bg-background text-foreground rounded-full p-2 group-hover:translate-x-1 transition-transform">
                      <ArrowUpRight className="w-5 h-5" />
                   </div>

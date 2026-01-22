@@ -54,17 +54,70 @@ async def create_status_check(input: StatusCheckCreate):
     _ = await db.status_checks.insert_one(doc)
     return status_obj
 
-@api_router.get("/status", response_model=List[StatusCheck])
-async def get_status_checks():
-    # Exclude MongoDB's _id field from the query results
-    status_checks = await db.status_checks.find({}, {"_id": 0}).to_list(1000)
-    
-    # Convert ISO string timestamps back to datetime objects
-    for check in status_checks:
-        if isinstance(check['timestamp'], str):
-            check['timestamp'] = datetime.fromisoformat(check['timestamp'])
-    
     return status_checks
+
+# --- NEW: Contact Handling ---
+
+class ContactMessage(BaseModel):
+    model_config = ConfigDict(extra="ignore")
+    
+    id: str = Field(default_factory=lambda: str(uuid.uuid4()))
+    email: str
+    timestamp: datetime = Field(default_factory=lambda: datetime.now(timezone.utc))
+
+class ContactMessageCreate(BaseModel):
+    email: str
+
+@api_router.post("/contact", response_model=ContactMessage)
+async def create_contact_message(input: ContactMessageCreate):
+    contact_dict = input.model_dump()
+    contact_obj = ContactMessage(**contact_dict)
+    
+    doc = contact_obj.model_dump()
+    doc['timestamp'] = doc['timestamp'].isoformat()
+    
+    await db.contact_messages.insert_one(doc)
+    return contact_obj
+
+# --- NEW: Projects Handling ---
+
+class Project(BaseModel):
+    model_config = ConfigDict(extra="ignore")
+
+    id: str = Field(default_factory=lambda: str(uuid.uuid4()))
+    title: str
+    category: str
+    subcategory: str
+    description: str
+    videoUrl: str
+    created_at: datetime = Field(default_factory=lambda: datetime.now(timezone.utc))
+
+class ProjectCreate(BaseModel):
+    title: str
+    category: str
+    subcategory: str
+    description: str
+    videoUrl: str
+
+@api_router.get("/projects", response_model=List[Project])
+async def get_projects():
+    projects = await db.projects.find({}, {"_id": 0}).to_list(1000)
+    for p in projects:
+        if isinstance(p.get('created_at'), str):
+             p['created_at'] = datetime.fromisoformat(p['created_at'])
+    return projects
+
+@api_router.post("/projects", response_model=Project)
+async def create_project(input: ProjectCreate):
+    # NOTE: In a real app, verify API Key or JWT here
+    project_dict = input.model_dump()
+    project_obj = Project(**project_dict)
+    
+    doc = project_obj.model_dump()
+    doc['created_at'] = doc['created_at'].isoformat()
+    
+    await db.projects.insert_one(doc)
+    return project_obj
 
 # Include the router in the main app
 app.include_router(api_router)
