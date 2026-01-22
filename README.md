@@ -8,34 +8,25 @@ A high-performance, visually immersive portfolio website designed for a professi
 
 - **Cinematic Intro**: Engaging opening sequence to captivate visitors immediately.
 - **Interactive Showcase**: Dynamic gallery to display film works and projects.
-- **Smooth Animations**: powered by **GSAP** and **Framer Motion** for a premium feel.
+- **Smooth Animations**: Powered by **GSAP** and **Framer Motion** for a premium feel.
 - **Responsive Design**: Fully optimized for all devices (Desktop, Tablet, Mobile).
-- **Backend Integration**: Scalable **FastAPI** backend for handling requests and data (optional).
+- **Modern Stack**: Built with React, Tailwind CSS, and CRACO for optimal performance.
 
 ## 🛠️ Tech Stack
 
-### Frontend
-
-- **React**: Library for building user interfaces.
-- **Tailwind CSS**: Utility-first CSS framework for rapid UI development.
-- **Framer Motion**: Production-ready motion library for React.
-- **GSAP**: Professional-grade animation library.
-- **Radix UI**: Unstyled, accessible components for building high-quality design systems.
-
-### Backend
-
-- **Python**: Core language.
-- **FastAPI**: Modern, fast (high-performance) web framework for building APIs.
-- **Motor**: Asynchronous MongoDB driver.
+- **React**: Library for building user interfaces
+- **Tailwind CSS**: Utility-first CSS framework for rapid UI development
+- **Framer Motion**: Production-ready motion library for React
+- **GSAP**: Professional-grade animation library
+- **Radix UI**: Unstyled, accessible components for building high-quality design systems
+- **CRACO**: Create React App Configuration Override for custom webpack config
+- **Lenis**: Smooth scroll library for premium scrolling experience
 
 ## 📦 Installation & Setup
-
-Follow these steps to set up the project locally.
 
 ### Prerequisites
 
 - [Node.js](https://nodejs.org/) (v16 or higher)
-- [Python](https://www.python.org/) (v3.9 or higher)
 - [Git](https://git-scm.com/)
 
 ### 1. Clone the Repository
@@ -45,16 +36,15 @@ git clone https://github.com/MatiasRocha92/portfolio-film.git
 cd portfolio-film
 ```
 
-### 2. Frontend Setup
-
-Navigate to the frontend directory and install dependencies:
+### 2. Install Dependencies
 
 ```bash
-cd frontend
-npm install
+npm install --legacy-peer-deps
 ```
 
-Start the development server:
+> **Note**: We use `--legacy-peer-deps` due to peer dependency conflicts between React 19 and some UI libraries.
+
+### 3. Start Development Server
 
 ```bash
 npm start
@@ -62,75 +52,94 @@ npm start
 
 The application will be available at [http://localhost:3000](http://localhost:3000).
 
-### 3. Backend Setup (Optional)
+### 4. Backend Setup (Optional)
 
-If you need to run the backend services:
+The backend is a **template** ready for you to configure with your own credentials.
 
 ```bash
 cd backend
-# Create a virtual environment
-python -m venv venv
-# Activate the virtual environment
-# Windows:
-venv\Scripts\activate
-# macOS/Linux:
-source venv/bin/activate
 
-# Install requirements
+# Install Python dependencies
 pip install -r requirements.txt
 
-# Run the server
-uvicorn server:app --reload
+# Copy environment template and configure
+cp .env.example .env
+# Edit .env with your MongoDB connection string
+
+# Run the backend server
+python main.py
 ```
 
 The API will be available at [http://localhost:8000](http://localhost:8000).
 
-## 🔌 API Documentation
+**See [backend/README.md](backend/README.md) for detailed setup instructions.**
 
-Once the backend is running, you can interact with the following endpoints:
+### 5. Build for Production
 
-### Contact
+```bash
+npm run build
+```
 
-- **POST** `/api/contact`
-  - **Body**: `{ "email": "user@example.com" }`
-  - **Description**: Stores contact form submissions.
-
-### Projects
-
-- **GET** `/api/projects`
-  - **Description**: Retrieves all projects to be displayed in the "Selected Works" section.
-- **POST** `/api/projects`
-  - **Body**:
-    ```json
-    {
-      "title": "Project Title",
-      "category": "Motion Design",
-      "subcategory": "Art Direction",
-      "description": "Project description...",
-      "videoUrl": "https://vimeo.com/..."
-    }
-    ```
-  - **Description**: Adds a new project to the portfolio.
-
-> [!TIP]
-> **Swagger UI**: You can view the interactive API documentation at [http://localhost:8000/docs](http://localhost:8000/docs) when the server is running.
+This creates an optimized production build in the `build/` directory.
 
 ## 📂 Project Structure
 
 ```bash
 portfolio-film/
-├── frontend/           # React Frontend Application
-│   ├── public/         # Static assets
-│   ├── src/
-│   │   ├── components/ # Reusable UI components
-│   │   ├── ui/         # Base UI elements
-│   │   └── ...
-│   └── ...
-├── backend/            # FastAPI Backend Application
-│   ├── server.py       # Main entry point
-│   └── ...
-└── README.md           # Project Documentation
+├── backend/            # FastAPI Backend (Template)
+│   ├── main.py         # API application
+│   ├── config.py       # Configuration
+│   ├── database.py     # MongoDB connection
+│   ├── models.py       # Data models
+│   ├── .env.example    # Environment template
+│   └── README.md       # Backend documentation
+├── public/             # Static assets
+│   └── assets/         # Images, videos, etc.
+├── src/
+│   ├── components/     # React components
+│   │   ├── ui/         # Reusable UI components (Radix)
+│   │   ├── MainHero.jsx
+│   │   ├── WorksSection.jsx
+│   │   ├── AboutSection.jsx
+│   │   └── ContactSection.jsx
+│   ├── hooks/          # Custom React hooks
+│   ├── lib/            # Utility functions
+│   ├── pages/          # Page components
+│   ├── index.css       # Global styles & Tailwind config
+│   └── index.js        # Application entry point
+├── craco.config.js     # CRACO configuration
+├── tailwind.config.js  # Tailwind CSS configuration
+├── package.json        # Dependencies
+└── README.md           # This file
 ```
+
+## 🎨 Design System
+
+The project uses a **cinematic, editorial design system** with:
+
+- **Monochromatic color palette**: Deep blacks and pure whites
+- **Premium typography**: Bebas Neue for headings, Inter for body text
+- **Smooth transitions**: Custom cubic-bezier easing functions
+- **Subtle animations**: GSAP-powered scroll triggers and reveals
+- **Film grain texture**: Noise overlay for authentic cinematic feel
+
+## 🚀 Deployment
+
+### Vercel (Recommended)
+
+1. Push your code to GitHub
+2. Import the project in [Vercel](https://vercel.com)
+3. Configure the following settings:
+   - **Framework Preset**: Create React App
+   - **Build Command**: `npm run build`
+   - **Output Directory**: `build`
+   - **Install Command**: `npm install --legacy-peer-deps`
+
+4. Add environment variables:
+   - `NPM_CONFIG_LEGACY_PEER_DEPS` = `true`
+   - `CI` = `false`
+
+5. Deploy!
 
 ## 🤝 Contributing
 
